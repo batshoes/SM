@@ -54,7 +54,7 @@ $('document').ready(function(){
         updateVisitorDetails("custom_attributes", currentCustomAttributes);
       });
 
-      $('#Email-2, #Email-5, #email-4, #email, #email-225f62ba-7bcc-43f7-a1a2-719612da3328_9566').change(function(){
+      $('#Email-2, #Email-5, #email-4, #email').change(function(){
         email = $(this).val();
         updateVisitorDetails("email", email)
       });
