@@ -28,40 +28,68 @@ $('document').ready(function(){
       });
 
       $('#First-Name, #Last-Name').change(function(){
-        name = $('#First-Name').val() + " " + $('#Last-Name').val()
-        updateVisitorDetails("name", name);
+        if ($(this).val() === "") {
+          return
+        } else {
+          name = $('#First-Name').val() + " " + $('#Last-Name').val()
+          updateVisitorDetails("name", name);
+        };
       });
 
       $('#First-Name-3, #Last-Name-3').change(function(){
-        name = $('#First-Name-3').val() + " " + $('#Last-Name-3').val()
-        updateVisitorDetails("name", name);
+        if ($(this).val() === "") {
+          return
+        } else {
+          name = $('#First-Name-3').val() + " " + $('#Last-Name-3').val()
+          updateVisitorDetails("name", name);
+        }
       });
 
       $('#First-Name-2, #Last-Name-2').change(function(){
-        name = $('#First-Name-2').val() + " " + $('#Last-Name-2').val()
-        updateVisitorDetails("name", name);
+        if ($(this).val() === "") {
+          return
+        } else {
+          name = $('#First-Name-2').val() + " " + $('#Last-Name-2').val()
+          updateVisitorDetails("name", name);
+        }
       });
       
       $('#Company-Name, #Company-Name-3, #Company-2').change(function(){
-        company = $(this).val();
-        currentCustomAttributes["companyName"] = company
-        updateVisitorDetails("custom_attributes", currentCustomAttributes);
+        if ($(this).val() === "") {
+          return
+        } else {
+          company = $(this).val();
+          currentCustomAttributes["companyName"] = company
+          updateVisitorDetails("custom_attributes", currentCustomAttributes);;
+        }
       });
 
      $('#Job-Title-2').change(function(){
-        JobPosition = $(this).val();
-        currentCustomAttributes["JobTitle"] = JobPosition
-        updateVisitorDetails("custom_attributes", currentCustomAttributes);
+        if ($(this).val() === "") {
+          return
+        } else {
+          JobPosition = $(this).val();
+          currentCustomAttributes["JobTitle"] = JobPosition
+          updateVisitorDetails("custom_attributes", currentCustomAttributes);
+        };
       });
 
       $('#Email-2, #Email-5, #email-4, #email').change(function(){
-        email = $(this).val();
-        updateVisitorDetails("email", email)
+        if ($(this).val() === "") {
+          return
+        } else {
+          email = $(this).val();
+          updateVisitorDetails("email", email)
+        };
       });
 
       $('#Phone-2').change(function(){
-        phone = $(this).val();
-        updateVisitorDetails("phone", phone)
+        if ($(this).val() === "") {
+          return
+        } else {
+          phone = $(this).val();
+          updateVisitorDetails("phone", phone);
+        };
       });
     }
   ); 
