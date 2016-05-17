@@ -1,4 +1,3 @@
-$('document').ready(function(){
   sm.getApi({version:'v1'}).then(
     function(api){
       window.salemoveApi = api;
@@ -93,7 +92,6 @@ $('document').ready(function(){
       });
     }
   ); 
-});
   
 function getHeaders(){
   // Set request headers to get current visitor information
