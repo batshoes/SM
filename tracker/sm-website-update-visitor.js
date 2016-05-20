@@ -1,147 +1,153 @@
+(function(sm) {
+
+  updateVisitorCustomAttributes = function(attributeName, attributeValue){
+    getCurrentVisitor(salemove).then(function(visitor) {
+      visitor.custom_attributes[attributeName] = attributeValue
+      $.ajax({
+        type: "POST",
+        beforeSend: function (request)
+          {
+            requestHeaders = sm.salemoveApi.getRequestHeaders();
+              Object.keys(requestHeaders).forEach(function(key) {
+              request.setRequestHeader(key, requestHeaders[key]);
+            });
+          },
+        url: "https://api.salemove.com/visitor",
+        data:
+          {
+            'note_update_method': 'append',
+            'custom_attributes': visitor.customAttributes
+          }
+        });
+      }, function(error) {
+        console.log('An error occurred: ', error);
+      }
+    );
+  }
+
+  updateVisitorInformation = function(attributeName, attributeValue){
+    getCurrentVisitor(salemove).then(function(visitor) {
+      visitor[attributeName] = attributeValue;
+      delete visitor.id;
+      delete visitor.href;
+      $.ajax({
+        type: "POST",
+        beforeSend: function (request)
+          {
+            requestHeaders = sm.salemoveApi.getRequestHeaders();
+              Object.keys(requestHeaders).forEach(function(key) {
+              request.setRequestHeader(key, requestHeaders[key]);
+            });
+          },
+        url: "https://api.salemove.com/visitor",
+        data: visitor
+        });
+      }, function(error) {
+        console.log('An error occurred: ', error);
+      }
+    );
+  }
+
+
+  getCurrentVisitor = function() {
+
+    return new Promise(function(resolve, reject) {
+     var xhr = new XMLHttpRequest();
+     var API_DOMAIN = "api.salemove.com"
+     var GET_CURRENT_VISIT_ENDPOINT = "https://" + API_DOMAIN + "/visitor";
+     xhr.open('GET', GET_CURRENT_VISIT_ENDPOINT);
+
+      requestHeaders = sm.salemoveApi.getRequestHeaders();
+        Object.keys(requestHeaders).forEach(function(key) {
+        xhr.setRequestHeader(key, requestHeaders[key]);
+     });
+
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+         parsedResponse = JSON.parse(xhr.responseText);
+         resolve(parsedResponse);
+        } else {
+         reject(xhr.statusText);
+        }
+      };
+      xhr.onerror = function() { reject(xhr.statusText); };
+
+     xhr.send();
+    });
+  }
+
   sm.getApi({version:'v1'}).then(
     function(api){
-      window.salemoveApi = api;
-      getHeaders();
-      getCurrentVisitor();
+      sm.salemoveApi = api;
 
-      // List of listeners for various events.
+        // List of listeners for various events.
 
-      // Type 1:
+        // Type 1:
         // Updates the current custom attributes
         // Then submits the object nested in custom attributes
       $('#preview').submit(function(){
         url = $('#cookieValue').val();
-        currentCustomAttributes["previewUrl"] = url
-        updateVisitorDetails("custom_attributes", currentCustomAttributes);
+        updateVisitorCustomAttributes("previewUrl", url);
       });
-      
+
       $('.resource, .home-persona-block').click(function(){
         personaType = this.dataset.persona;
-        currentCustomAttributes["persona"] = personaType
-        updateVisitorDetails("custom_attributes", currentCustomAttributes);
+        updateVisitorCustomAttributes("persona", personaType);
       });
 
       $('.home-video-colomn > .w-embed').click(function(){
-        currentCustomAttributes["videoWatched"] = "true"
-        updateVisitorDetails("custom_attributes", currentCustomAttributes);
+        updateVisitorCustomAttributes("videoWatched","yes")
       });
 
       $('#First-Name, #Last-Name').change(function(){
-        if ($(this).val() === "") {
-          return
-        } else {
-          name = $('#First-Name').val() + " " + $('#Last-Name').val()
-          updateVisitorDetails("name", name);
+        if ($(this).val().length > 0) {
+           name = $('#First-Name').val() + " " + $('#Last-Name').val()
+           updateVisitorInformation("name", name);
         };
       });
 
       $('#First-Name-3, #Last-Name-3').change(function(){
-        if ($(this).val() === "") {
-          return
-        } else {
+        if ($(this).val().length > 0 ) {
           name = $('#First-Name-3').val() + " " + $('#Last-Name-3').val()
-          updateVisitorDetails("name", name);
+          updateVisitorInformation("name", name);
         }
       });
 
       $('#First-Name-2, #Last-Name-2').change(function(){
-        if ($(this).val() === "") {
-          return
-        } else {
+        if ($(this).val() > 0 ) {
           name = $('#First-Name-2').val() + " " + $('#Last-Name-2').val()
-          updateVisitorDetails("name", name);
-        }
-      });
-      
-      $('#Company-Name, #Company-Name-3, #Company-2').change(function(){
-        if ($(this).val() === "") {
-          return
-        } else {
-          company = $(this).val();
-          currentCustomAttributes["companyName"] = company
-          updateVisitorDetails("custom_attributes", currentCustomAttributes);;
+          updateVisitorInformation("name", name);
         }
       });
 
-     $('#Job-Title-2').change(function(){
-        if ($(this).val() === "") {
-          return
-        } else {
-          JobPosition = $(this).val();
-          currentCustomAttributes["JobTitle"] = JobPosition
-          updateVisitorDetails("custom_attributes", currentCustomAttributes);
+      $('#Company-Name, #Company-Name-3, #Company-2').change(function(){
+        if ($(this).val() > 0) {
+          companyName = $(this).val();
+          updateVisitorCustomAttributes("companyName", companyName);
+        }
+      });
+
+      $('#Job-Title-2').change(function(){
+        if ($(this).val().length > 0 ) {
+          jobTitle = $(this).val();
+          updateVisitorCustomAttributes("jobTitle", jobTitle);
         };
       });
 
       $('#Email-2, #Email-5, #email-4, #email').change(function(){
-        if ($(this).val() === "") {
-          return
-        } else {
+        if ($(this).val().length > 0 ) {
           email = $(this).val();
-          updateVisitorDetails("email", email)
+          updateVisitorInformation("email", email);
         };
       });
 
       $('#Phone-2').change(function(){
-        if ($(this).val() === "") {
-          return
-        } else {
+        if ($(this).val().length > 0) {
           phone = $(this).val();
-          updateVisitorDetails("phone", phone);
+          updateVisitorInformation("phone", phone);
         };
       });
     }
-  ); 
-  
-function getHeaders(){
-  // Set request headers to get current visitor information
-  window.requestHeadersAuth = salemoveApi.getRequestHeaders()['Authorization']
-  window.requestHeadersSession = salemoveApi.getRequestHeaders()['X-Salemove-Visit-Session-Id']
-};
-
-function updateVisitorDetails(attributeType, attributeData){
-  dataAttributes[attributeType] = attributeData
-  $.ajax({
-      type: "POST",
-      beforeSend: function (request)
-        {
-            request.setRequestHeader('Authorization',
-                      requestHeadersAuth);
-            request.setRequestHeader('Accept',
-                      'application/vnd.salemove.v1+json');
-            request.setRequestHeader('X-Salemove-Visit-Session-Id',
-                      requestHeadersSession);
-        },
-      url: "https://api.salemove.com/visitor",
-      data: dataAttributes
-    });
+ );
 }
-
-function getCurrentVisitor(){
-// Get details of current visitor
-  $.ajax({
-      type: "GET",
-      beforeSend: function (request)
-        {
-            request.setRequestHeader('Authorization',
-                      requestHeadersAuth);
-            request.setRequestHeader('Accept',
-                      'application/vnd.salemove.v1+json');
-            request.setRequestHeader('X-Salemove-Visit-Session-Id',
-                      requestHeadersSession);
-        },
-      url: "https://api.salemove.com/visitor",
-      success: function(e){
-        // Set empty object to update visitor
-        dataAttributes = {}
-
-        if (e.custom_attributes == null || undefined) {
-          // Set empty object for custom attributes
-          window.currentCustomAttributes = {}
-        } else {          
-          // Set custom attributes to any existing custom attributes.
-          window.currentCustomAttributes = e.custom_attributes  
-        }
-      }
-    });
-}
+)(sm);
