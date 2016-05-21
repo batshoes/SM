@@ -15,8 +15,8 @@
         url: "https://api.salemove.com/visitor",
         data:
           {
-            'note_update_method': 'append',
-            'custom_attributes': visitor.customAttributes
+            // 'note_update_method': 'append',
+            'custom_attributes': visitor.custom_attributes
           }
         });
       }, function(error) {
