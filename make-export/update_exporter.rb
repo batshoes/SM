@@ -24,7 +24,5 @@ headers = {
   :authorization => 'Token API_KEY',
   :accept => 'application/vnd.salemove.v1+json'
 }
-binding.pry
 response = RestClient.put 'https://api.salemove.com/sites/SITE_ID/crm/exports/CRM_EXPORT_ID', values, headers
-binding.pry
 puts response
